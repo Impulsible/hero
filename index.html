@@ -164,10 +164,10 @@
             </div>
           </div>
 <!-- FEATURED CAROUSEL -->
-<div id="featured-heroes" class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal">
+<div id="featured-heroes" class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal w-full">
   <h3 class="font-display text-2xl text-gold mb-3 text-center">Featured Heroes</h3>
 
-  <div class="carousel relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-dark">
+  <div class="carousel relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-dark w-full">
     <!-- Slides will be injected here -->
   </div>
 
@@ -177,19 +177,18 @@
 
 <script>
   const HEROES = [
-    { name: "Gal Gadot",         src: "images/gal.webp",   alt: "Wonder Woman" },
-    { name: "Barry Allen",         src: "images/barry.webp",         alt: "The Flash" },
-    { name: "Tobey Maguire",           src: "images/toby.webp",     alt: "Spider-Man" },
-    { name: "Dinah Drake",         src: "images/dinah.webp",   alt: "Black Canary" },
-    { name: "Clark Kent (Tyler Hoechlin)", src: "images/tyler.webp",      alt: "Superman" },
-    { name: "Matt Murdock",               src: "images/matt.webp",  alt: "Daredevil" },
-    { name: "Benedict Cumberbatch",             src: "images/ben.webp",   alt: "Doctor Strange" },
-    { name: "Scarlett Johansson",          src: "images/scar.webp",    alt: "Black Widow" },
-    { name: "Oliver Queen",          src: "images/oliver.webp",       alt: "Oliver Queen (Green Arrow)" },
-    { name: "Elizabeth Olsen",        src: "images/elizabeth.webp",  alt: "Scarlet Witch" },
+    { name: "Gal Gadot", src: "images/gal.webp", alt: "Wonder Woman" },
+    { name: "Barry Allen", src: "images/barry.webp", alt: "The Flash" },
+    { name: "Tobey Maguire", src: "images/toby.webp", alt: "Spider-Man" },
+    { name: "Dinah Drake", src: "images/dinah.webp", alt: "Black Canary" },
+    { name: "Clark Kent (Tyler Hoechlin)", src: "images/tyler.webp", alt: "Superman" },
+    { name: "Matt Murdock", src: "images/matt.webp", alt: "Daredevil" },
+    { name: "Benedict Cumberbatch", src: "images/ben.webp", alt: "Doctor Strange" },
+    { name: "Scarlett Johansson", src: "images/scar.webp", alt: "Black Widow" },
+    { name: "Oliver Queen", src: "images/oliver.webp", alt: "Green Arrow" },
+    { name: "Elizabeth Olsen", src: "images/elizabeth.webp", alt: "Scarlet Witch" },
   ];
 
-  // --- Fisher–Yates shuffle ---
   function shuffle(arr) {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -199,7 +198,6 @@
     return a;
   }
 
-  // --- Build slides + dots ---
   (function buildFeaturedCarousel() {
     const root = document.getElementById("featured-heroes");
     const carousel = root.querySelector(".carousel");
@@ -207,7 +205,6 @@
 
     const shuffled = shuffle(HEROES);
 
-    // Create slides
     shuffled.forEach((hero, idx) => {
       const slide = document.createElement("div");
       slide.className = "carousel-slide w-full h-full" + (idx === 0 ? " active" : "");
@@ -217,7 +214,7 @@
           <div class="w-full h-full bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
             <!-- Image always fully visible -->
             <img loading="lazy" src="${hero.src}" alt="${hero.alt}"
-                 class="max-h-full max-w-full object-contain rounded-lg pointer-events-none" />
+                 class="h-full w-full object-contain rounded-lg pointer-events-none" />
           </div>
           <!-- Name overlay -->
           <div class="absolute inset-x-2 bottom-2">
@@ -233,7 +230,6 @@
       carousel.appendChild(slide);
     });
 
-    // Create dots
     shuffled.forEach((_, idx) => {
       const btn = document.createElement("button");
       btn.setAttribute("data-dot", idx);
@@ -242,7 +238,6 @@
       dotsBar.appendChild(btn);
     });
 
-    // Minimal navigation
     const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
     const dots   = Array.from(dotsBar.querySelectorAll("[data-dot]"));
 
@@ -254,13 +249,8 @@
     }
 
     dots.forEach(d => d.addEventListener("click", () => activate(+d.dataset.dot)));
-
-    // Optional: auto-advance every 6s (disable if you already do this elsewhere)
-    // let current = 0;
-    // setInterval(() => { current = (current + 1) % slides.length; activate(current); }, 6000);
   })();
 </script>
-
 
         <!-- QUICK LINKS -->
         <div class="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">
