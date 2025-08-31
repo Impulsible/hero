@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Teams & Alliances — Heroverse</title>
+  <meta name="description" content="Explore superhero and supervillain teams across universes — origins, members, bases, affiliations, and galleries." />
+  <meta name="author" content="Your Name" />
+  <link rel="icon" href="favicon.ico" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Bangers','cursive'],
+            sans: ['Poppins','ui-sans-serif','system-ui'],
+          },
+          colors: {
+            hero:'#E50914',
+            primary:'#0055FF',
+            gold:'#FFD700',
+            dark:'#0d0f13',
+            dark2:'#111521'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html{scroll-behavior:smooth}
+    .comic-shadow{box-shadow:0 10px 25px rgba(0,0,0,.25),0 2px 8px rgba(0,0,0,.1)}
+    .grid-auto{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
+    }
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+    .reveal.show{opacity:1;transform:translateY(0)}
+    .glow-hover:hover{text-shadow:0 0 10px rgba(255,215,0,.7),0 0 20px rgba(255,215,0,.5)}
+    .modal{position:fixed;inset:0;display:none}
+    .modal.open{display:block}
+
+    /* Select chevrons */
+    .selectish{
+      appearance:none;
+      background-image:
+        linear-gradient(135deg,transparent 50%,#ffd700 50%),
+        linear-gradient(45deg,#ffd700 50%,transparent 50%);
+      background-position:right 12px top 55%, right 6px top 55%;
+      background-size:6px 6px,6px 6px;
+      background-repeat:no-repeat;
+      padding-right:2.25rem
+    }
+
+    .card-img{height:13.5rem}
+    .profile-img{height:19rem}
+
+    /* ======== Modal gallery thumbs (beautiful dark boxes) ======== */
+    .gallery-row{
+      display:flex; gap:1rem; padding:.75rem .5rem 1rem;
+      overflow-x:auto; overflow-y:visible; scroll-snap-type:x mandatory; scroll-padding-left:.75rem;
+    }
+    .gallery-row::-webkit-scrollbar{height:12px}
+    .gallery-row::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:999px}
+    .gallery-item{
+      min-width:420px;height:260px;flex:0 0 auto;scroll-snap-align:center;
+      border-radius:12px;border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);
+      object-fit:cover;
+      cursor:zoom-in;
+    }
+    @media (max-width:640px){ .gallery-item{min-width:320px;height:210px} }
+
+    /* ========= LIGHTBOX (matches your screenshot style) ========= */
+    #lightbox{position:fixed; inset:0; z-index:60; display:none; overscroll-behavior:contain}
+    #lightbox.open{display:block}
+    .lb-wrap{position:absolute;inset:0;display:flex;flex-direction:column;padding:16px}
+    @media (min-width:640px){ .lb-wrap{padding:24px} }
+
+    .lb-top{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem;color:#fff}
+    .lb-title{font-weight:600}
+    .lb-count{opacity:.8;font-size:.9rem}
+    .lb-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.45rem .7rem;border-radius:.7rem}
+    .lb-btn:hover{background:rgba(255,255,255,.14)}
+
+    .lb-stage{position:relative;flex:1 1 auto;min-height:0;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border-radius:1rem;padding:10px;overflow:hidden;touch-action:none}
+    @media (min-width:640px){ .lb-stage{padding:16px;border-radius:1.25rem} }
+
+    .lb-canvas{width:100%;height:100%;display:flex;align-items:center;justify-content:center;user-select:none}
+    .lb-img{max-width:96vw;max-height:80vh;width:auto;height:auto;border-radius:.75rem;object-fit:contain;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 35px rgba(0,0,0,.5), 0 2px 10px rgba(0,0,0,.25);transform-origin:center center;will-change:transform;cursor:grab}
+    .lb-img.grabbing{cursor:grabbing}
+    @media (min-width:640px){ .lb-img{max-width:86vw;max-height:82vh} }
+
+    .lb-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.6rem .9rem;border-radius:.9rem;backdrop-filter:blur(4px)}
+    .lb-arrow:hover{background:rgba(255,255,255,.14)}
+    .lb-prev{left:8px} .lb-next{right:8px}
+    @media (min-width:640px){ .lb-prev{left:14px} .lb-next{right:14px} }
+
+    .lb-bottom{margin-top:.6rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:.9rem;padding:.5rem .5rem}
+    .lb-thumbs-wrap{position:relative;display:flex;align-items:center;gap:.4rem}
+    .lb-scroll{flex:0 0 auto;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);padding:.35rem .55rem;border-radius:.6rem}
+    .lb-scroll:hover{background:rgba(255,255,255,.14)}
+    .lb-thumbs{overflow-x:auto;scroll-behavior:smooth;gap:.5rem;display:flex;align-items:center;padding:.2rem;-ms-overflow-style:none;scrollbar-width:thin}
+    .lb-thumbs::-webkit-scrollbar{height:10px}
+    .lb-thumbs::-webkit-scrollbar-thumb{background:#ffffff22;border-radius:999px}
+
+    .lb-thumb{width:110px;height:74px;flex:0 0 auto;border-radius:.5rem;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);overflow:hidden;opacity:.85;transition:opacity .2s, transform .2s}
+    .lb-thumb:hover{opacity:1;transform:translateY(-1px)}
+    .lb-thumb.active{outline:2px solid #FFD700;opacity:1}
+    @media (min-width:640px){ .lb-thumb{width:130px;height:86px} }
+
+    .lb-badge{font-size:.85rem;opacity:.9}
+
+    /* Mobile: only gallery scroller inside modal */
+    @media (max-width:640px){
+      .profile-modal{ overflow: hidden; }
+      .gallery-vert{ display:flex; flex-direction:column; max-height:60vh; overflow-y:auto; overflow-x:hidden; -webkit-overflow-scrolling:touch; scroll-snap-type:y mandatory; gap:0.75rem; padding-right:4px; }
+      .gallery-vert .gallery-item{ min-width:100%; height:auto; aspect-ratio:16/10; scroll-snap-align:start; }
+    }
+
+    /* Back-to-top fab */
+    .fab{position:fixed;right:16px;bottom:16px;z-index:50}
+  </style>
+</head>
+<body id="top" class="bg-dark text-white">
+  <!-- Skip links -->
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+  <a href="#filters" class="sr-only focus:not-sr-only focus:fixed focus:top-14 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to filters</a>
+
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">
+        <span class="sr-only">Menu</span> ☰
+      </button>
+
+      <nav class="hidden md:flex items-center gap-5 sm:gap-6 text-sm" aria-label="Primary">
+        <a class="hover:text-gold" href="heroes.html">Hall of Heroes</a>
+        <a class="hover:text-gold" href="villains.html">Rogues Gallery</a>
+        <a class="hover:text-gold" href="teams.html" aria-current="page">Teams</a>
+        <a class="hover:text-gold" href="stories.html">Stories</a>
+        <a class="hover:text-gold" href="rankings.html">Rankings</a>
+        <a class="hover:text-gold" href="news.html">News</a>
+        <a class="hover:text-gold" href="about.html">About</a>
+        <a class="hover:text-gold" href="contact.html">Contact</a>
+      </nav>
+
+      <button id="randomBtn" class="hidden sm:inline-flex items-center gap-2 bg-primary text-white px-3 sm:px-4 py-2 rounded-xl hover:brightness-110 transition">
+        🎲 Random Team
+      </button>
+    </div>
+
+    <!-- Mobile drawer (colored) -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-primary/30 bg-primary/15 hover:bg-primary/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-hero/40 bg-hero/20 hover:bg-hero/30 text-white transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-gold/40 bg-gold/20 hover:bg-gold/30 text-dark font-semibold transition" href="teams.html" aria-current="page">Teams</a>
+        <a class="rounded-lg p-3 border border-white/20 bg-white/5 hover:bg-white/10 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-white/20 bg-white/5 hover:bg-white/10 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-white/20 bg-white/5 hover:bg-white/10 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-white/20 bg-white/5 hover:bg-white/10 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-white/20 bg-white/5 hover:bg-white/10 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+    <header class="text-center mb-6 reveal">
+      <h1 class="font-display text-4xl sm:text-5xl">Teams & Alliances</h1>
+      <p class="text-white/70 max-w-2xl mx-auto mt-2">
+        Filter by universe, alignment, and focus. Open a team to see HQ, roster highlights, affiliations, notable arcs, and image galleries.
+      </p>
+    </header>
+
+    <!-- FILTERS -->
+    <section id="filters" class="reveal">
+      <div class="rounded-2xl border border-gold/25 bg-gradient-to-r from-[#0f1320] via-[#12172a] to-[#0f1320] p-4 sm:p-5 comic-shadow">
+        <div class="grid gap-3 sm:gap-4 md:grid-cols-12 items-end">
+          <div class="md:col-span-5">
+            <label class="text-xs uppercase tracking-wide text-white/80">Search</label>
+            <input id="search" type="text" placeholder="team, member, focus, base…" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white placeholder-white/60 px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-xs uppercase tracking-wide text-white/80">Universe</label>
+            <select id="universe" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Marvel</option>
+              <option>DC</option>
+              <option>Original</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="text-xs uppercase tracking-wide text-white/80">Alignment</label>
+            <select id="alignment" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>Hero</option>
+              <option>Villain</option>
+              <option>Anti-hero</option>
+              <option>Neutral</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-3">
+            <label class="text-xs uppercase tracking-wide text-white/80">Focus</label>
+            <select id="focus" class="mt-1 w-full rounded-2xl bg-[#141824]/90 border border-gold/30 text-white px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gold selectish">
+              <option value="all">All</option>
+              <option>mutant</option>
+              <option>cosmic</option>
+              <option>magic</option>
+              <option>tech</option>
+              <option>government</option>
+              <option>street</option>
+              <option>assassins</option>
+              <option>villainy</option>
+            </select>
+          </div>
+
+          <div class="md:col-span-12 flex flex-wrap gap-2 pt-2">
+            <button id="clearFilters" class="px-4 py-2 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20">Clear</button>
+            <button id="randomBtn2" class="px-4 py-2 rounded-xl bg-primary hover:brightness-110">🎲 Random Team</button>
+          </div>
+        </div>
+        <p id="summary" class="mt-3 text-sm text-white/85">Loading…</p>
+      </div>
+    </section>
+
+    <!-- GRID -->
+    <section class="mt-6">
+      <div id="grid" class="grid grid-auto gap-6 sm:gap-7"></div>
+      <p id="noResults" class="hidden text-center text-white/60 mt-6">No teams match your filters.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-white/10 py-8 text-center text-white/60">
+    <p>© <span id="year"></span> Heroverse. All rights reserved.</p>
+    <p>Last modified: <span id="lastModified"></span></p>
+    <p class="mt-2 flex justify-center items-center gap-2">
+      <span class="text-xl">🛡️</span>
+      <span class="text-gold font-semibold glow-hover">Built by YourName</span>
+      <span class="text-xl">🌌</span>
+    </p>
+  </footer>
+
+  <!-- Back to top FAB -->
+  <a href="#top" class="fab hidden sm:inline-flex items-center gap-2 bg-gold text-dark px-3 py-2 rounded-xl border border-white/10 hover:brightness-110">
+    ↑ Top
+  </a>
+
+  <!-- PROFILE MODAL -->
+  <div id="modal" class="modal z-50">
+    <div class="absolute inset-0 bg-black/70" data-close></div>
+    <div class="relative max-w-5xl mx-auto mt-8 sm:mt-10 bg-dark border border-white/10 rounded-3xl comic-shadow p-6 max-h-[85vh] overflow-auto profile-modal">
+      <button class="absolute top-2 right-3 text-white/70 hover:text-white" data-close>✕</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- LIGHTBOX (shared across pages) -->
+  <div id="lightbox" class="hidden">
+    <div class="absolute inset-0 bg-black/90" data-lb-close></div>
+    <div class="lb-wrap">
+      <div class="lb-top">
+        <div class="flex items-center gap-2">
+          <span class="lb-title" id="lbCaption">Team</span>
+          <span class="lb-count" id="lbCount">1 / 3</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="lbZoomBadge" class="lb-badge hidden sm:inline-block px-2 py-1 rounded bg-white/10 border border-white/20">100%</span>
+          <button id="lbReset" class="lb-btn" title="Reset zoom">↺</button>
+          <button id="lbDownload" class="lb-btn" title="Open image in new tab">⬇</button>
+          <button id="lbClose" class="lb-btn" title="Close">✕</button>
+        </div>
+      </div>
+
+      <div class="lb-stage" id="lbStage">
+        <button class="lb-arrow lb-prev" id="lbPrev" aria-label="Previous">‹</button>
+        <button class="lb-arrow lb-next" id="lbNext" aria-label="Next">›</button>
+        <div class="lb-canvas">
+          <img id="lbImg" src="" alt="Gallery image" class="lb-img" />
+        </div>
+      </div>
+
+      <div class="lb-bottom">
+        <div class="lb-thumbs-wrap">
+          <button class="lb-scroll" id="thumbPrev" aria-label="Scroll thumbnails left">‹</button>
+          <div class="lb-thumbs" id="lbThumbs"></div>
+          <button class="lb-scroll" id="thumbNext" aria-label="Scroll thumbnails right">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ---------- Utility & UI ---------- */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    document.getElementById('lastModified').textContent = document.lastModified;
+
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+    const io = new IntersectionObserver((entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    /* ---------- Helpers ---------- */
+    const makeId = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
+    const img = (seed) => `https://picsum.photos/seed/${encodeURIComponent(seed)}/520/600`;
+    const autoGal = (id) => [
+      `https://picsum.photos/seed/${encodeURIComponent(id+'-1')}/1200/800`,
+      `https://picsum.photos/seed/${encodeURIComponent(id+'-2')}/1200/800`,
+      `https://picsum.photos/seed/${encodeURIComponent(id+'-3')}/1200/800`,
+    ];
+    const M='Marvel', D='DC', O='Original';
+    const H='Hero', V='Villain', AH='Anti-hero', N='Neutral';
+
+    /* ---------- Teams roster ---------- */
+    const BASE = [
+      {name:'Avengers', universe:M, alignment:H, focus:['tech','cosmic'], base:'Avengers Tower, NYC', members:['Iron Man','Captain America','Thor','Hulk','Black Widow','Hawkeye']},
+      {name:'X-Men', universe:M, alignment:H, focus:['mutant'], base:'Xavier’s School, Westchester', members:['Professor X','Cyclops','Jean Grey','Wolverine','Storm','Beast']},
+      {name:'Fantastic Four', universe:M, alignment:H, focus:['tech','cosmic'], base:'Baxter Building, NYC', members:['Mr. Fantastic','Invisible Woman','Human Torch','Thing']},
+      {name:'Guardians of the Galaxy', universe:M, alignment:H, focus:['cosmic'], base:'Milano / Knowhere', members:['Star-Lord','Gamora','Drax','Rocket','Groot','Mantis']},
+      {name:'Defenders', universe:M, alignment:H, focus:['street'], base:'NYC', members:['Daredevil','Jessica Jones','Luke Cage','Iron Fist']},
+      {name:'Thunderbolts', universe:M, alignment:AH, focus:['tech','street'], base:'Mobile', members:['Baron Zemo','Taskmaster','Yelena','US Agent']},
+      {name:'S.H.I.E.L.D.', universe:M, alignment:H, focus:['government','tech'], base:'Helicarrier', members:['Nick Fury','Maria Hill','Phil Coulson']},
+      {name:'Hydra', universe:M, alignment:V, focus:['villainy','tech'], base:'Hidden cells', members:['Red Skull','Baron Strucker','Arnim Zola']},
+      {name:'Sinister Six', universe:M, alignment:V, focus:['villainy','tech'], base:'NYC', members:['Doc Ock','Vulture','Electro','Sandman','Mysterio','Kraven']},
+      {name:'Brotherhood of Mutants', universe:M, alignment:V, focus:['mutant','villainy'], base:'Various', members:['Magneto','Mystique','Sabretooth','Toad']},
+      {name:'Hellfire Club', universe:M, alignment:N, focus:['mutant','intellect'], base:'NYC', members:['Emma Frost','Sebastian Shaw']},
+      {name:'The Hand', universe:M, alignment:V, focus:['assassins','magic'], base:'Japan', members:['Elektra (former)','Nobu']},
+      {name:'A-Force', universe:M, alignment:H, focus:['tech','cosmic'], base:'Arcadia', members:['She-Hulk','Captain Marvel','Nico Minoru']},
+
+      {name:'Justice League', universe:D, alignment:H, focus:['tech','magic','cosmic'], base:'Watchtower', members:['Superman','Batman','Wonder Woman','Flash','Aquaman','Green Lantern']},
+      {name:'Justice Society of America', universe:D, alignment:H, focus:['magic','tech'], base:'Civic City', members:['Doctor Fate','Hawkman','Power Girl','Flash (Jay Garrick)']},
+      {name:'Teen Titans', universe:D, alignment:H, focus:['street','magic'], base:'Titans Tower', members:['Robin','Starfire','Raven','Beast Boy','Cyborg']},
+      {name:'Doom Patrol', universe:D, alignment:H, focus:['tech','weird'], base:'Doom Manor', members:['Robotman','Negative Man','Elasti-Woman','Crazy Jane']},
+      {name:'Birds of Prey', universe:D, alignment:H, focus:['street','tech'], base:'Gotham', members:['Oracle','Black Canary','Huntress']},
+      {name:'Suicide Squad', universe:D, alignment:AH, focus:['government','assassins'], base:'Belle Reve', members:['Harley Quinn','Deadshot','Captain Boomerang']},
+      {name:'Outsiders', universe:D, alignment:H, focus:['street','tech'], base:'Gotham', members:['Batman','Geo-Force','Katana','Black Lightning']},
+      {name:'Green Lantern Corps', universe:D, alignment:H, focus:['cosmic','energy'], base:'Oa', members:['Hal Jordan','John Stewart','Kyle Rayner','Kilowog']},
+      {name:'Legion of Super-Heroes', universe:D, alignment:H, focus:['cosmic','tech'], base:'31st Century', members:['Saturn Girl','Lightning Lad','Cosmic Boy']},
+      {name:'Injustice League', universe:D, alignment:V, focus:['villainy'], base:'Secret', members:['Lex Luthor','Joker','Cheetah','Black Manta']},
+      {name:'Crime Syndicate', universe:D, alignment:V, focus:['villainy','cosmic'], base:'Earth-3', members:['Ultraman','Owlman','Superwoman']},
+      {name:'League of Assassins', universe:D, alignment:V, focus:['assassins','magic'], base:'Nanda Parbat', members:['Ra’s al Ghul','Talia al Ghul']},
+
+      {name:'Watchmen', universe:O, alignment:AH, focus:['street'], base:'NYC', members:['Rorschach','Nite Owl','Silk Spectre','Dr. Manhattan','Ozymandias']},
+      {name:'The Seven', universe:O, alignment:V, focus:['villainy','tech'], base:'Vought Tower', members:['Homelander','Queen Maeve','A-Train']},
+      {name:'Guardians of the Globe', universe:O, alignment:H, focus:['cosmic'], base:'Global HQ', members:['Immortal','Dupli-Kate','Rex Splode','Monster Girl']},
+      {name:'Teen Team', universe:O, alignment:H, focus:['street','tech'], base:'Mobile', members:['Robot','Atom Eve','Rex Splode']},
+      {name:'Viltrum Empire', universe:O, alignment:V, focus:['cosmic','villainy'], base:'Viltrum', members:['Thragg','Conquest','Omni-Man (early)']},
+      {name:'Ninja Turtles', universe:O, alignment:H, focus:['street','martial arts'], base:'NYC Sewers', members:['Leonardo','Michelangelo','Donatello','Raphael']},
+      {name:'Foot Clan', universe:O, alignment:V, focus:['assassins'], base:'NYC', members:['Shredder','Karai']},
+      {name:'Team Avatar (Gaang)', universe:O, alignment:H, focus:['magic'], base:'Ba Sing Se / Mobile', members:['Aang','Katara','Sokka','Toph','Zuko']},
+      {name:'Z Fighters', universe:O, alignment:H, focus:['cosmic','martial arts'], base:'Earth', members:['Goku','Vegeta','Gohan','Piccolo']},
+      {name:'The Authority', universe:O, alignment:AH, focus:['tech','cosmic'], base:'Carrier', members:['Midnighter','Apollo','Jenny Sparks']},
+    ].map(t => ({ id: makeId(t.name), image: img(t.name+'-team'), ...t }));
+
+    const DETAILS = {
+      'avengers': {
+        motto:'“Earth’s Mightiest Heroes.”',
+        affiliations:['S.H.I.E.L.D.','Young Avengers'],
+        arcs:['Infinity','Civil War','Secret Wars'],
+        gallery:autoGal('avengers')
+      },
+      'x-men': {
+        motto:'“Protecting a world that hates and fears them.”',
+        affiliations:['X-Force','X-Factor'],
+        arcs:['Dark Phoenix Saga','House of X / Powers of X'],
+        gallery:autoGal('x-men')
+      },
+      'justice-league': {
+        motto:'“Truth and Justice for all.”',
+        affiliations:['Justice League Dark','Teen Titans'],
+        arcs:['Tower of Babel','Crisis on Infinite Earths'],
+        gallery:autoGal('justice-league')
+      },
+      'the-seven': {
+        motto:'Corporate superheroes with dark secrets.',
+        affiliations:['Vought International'],
+        arcs:['The Boys: Season 1–3'],
+        gallery:autoGal('the-seven')
+      }
+    };
+
+    const DEFAULTS = {
+      focusToTraits: {
+        mutant:['Mutation advocacy','School ties'],
+        cosmic:['Interstellar ops','High-threat response'],
+        magic:['Arcane expertise'],
+        tech:['Gadgetry & labs'],
+        government:['Sanctioned missions'],
+        street:['Urban vigilantes'],
+        assassins:['Covert ops','Stealth'],
+        villainy:['Criminal syndicate']
+      },
+      universeAffils: {
+        Marvel:['Avengers Initiative','S.H.I.E.L.D.'],
+        DC:['Justice League Network','Teen Titans Academy'],
+        Original:['Independent network']
+      }
+    };
+
+    const TEAMS = BASE.map(t => {
+      const d = DETAILS[t.id] || {};
+      return {
+        ...t,
+        motto: d.motto || '',
+        affiliations: d.affiliations || (DEFAULTS.universeAffils[t.universe] || []),
+        arcs: d.arcs || ['Notable stories vary'],
+        gallery: (d.gallery && d.gallery.length ? d.gallery : autoGal(t.id)),
+      };
+    });
+
+    /* ---------- Render ---------- */
+    const elGrid = document.getElementById('grid');
+    const elSummary = document.getElementById('summary');
+    const elNoResults = document.getElementById('noResults');
+    const elSearch = document.getElementById('search');
+    const elUniverse = document.getElementById('universe');
+    const elAlignment = document.getElementById('alignment');
+    const elFocus = document.getElementById('focus');
+
+    function teamCard(t){
+      const tags = [t.universe, t.alignment, ...(t.focus||[])].filter(Boolean).slice(0,3).map(x =>
+        `<span class="px-2 py-0.5 rounded-lg bg-white/10 border border-white/10 text-xs">${x}</span>`
+      ).join(' ');
+      return `
+        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:-translate-y-0.5 hover:bg-white/10 transition comic-shadow">
+          <div class="card-img bg-white/5 overflow-hidden flex items-center justify-center">
+            <img loading="lazy" src="${t.image}" alt="${t.name}" class="w-full h-full object-contain">
+          </div>
+          <div class="p-4 text-center">
+            <h3 class="font-display text-2xl text-gold">${t.name}</h3>
+            <p class="text-white/70">${t.base || ''}</p>
+            <p class="text-white/80 text-sm mt-2">Members: ${(t.members||[]).slice(0,4).join(', ')}${(t.members||[]).length>4?'…':''}</p>
+            <div class="mt-2 flex gap-2 justify-center">${tags}</div>
+            <button class="inline-block mt-3 bg-primary px-4 py-2 rounded-xl hover:brightness-110" data-open="${t.id}">View Team</button>
+          </div>
+        </article>
+      `;
+    }
+
+    function applyFilters(){
+      const q = (elSearch.value || '').trim().toLowerCase();
+      const u = elUniverse.value;
+      const a = elAlignment.value;
+      const f = elFocus.value;
+
+      let list = TEAMS.filter(t=>{
+        const text = [
+          t.name, t.base,
+          (t.members||[]).join(' '),
+          (t.focus||[]).join(' '),
+          (t.affiliations||[]).join(' '),
+          (t.arcs||[]).join(' ')
+        ].join(' ').toLowerCase();
+        const matchQ = !q || text.includes(q);
+        const matchU = (u==='all') || (t.universe===u);
+        const matchA = (a==='all') || (t.alignment===a);
+        const matchF = (f==='all') || (t.focus||[]).includes(f);
+        return matchQ && matchU && matchA && matchF;
+      });
+
+      elSummary.textContent = `${list.length} result${list.length===1?'':'s'} • ${u==='all'?'All universes':u} • ${a==='all'?'All alignments':a} • ${f==='all'?'All focuses':f}`;
+      elGrid.innerHTML = list.map(teamCard).join('');
+      elNoResults.classList.toggle('hidden', list.length>0);
+
+      document.querySelectorAll('[data-open]').forEach(btn=>{
+        btn.addEventListener('click', ()=> openProfile( TEAMS.find(t=>t.id===btn.dataset.open) ));
+      });
+    }
+
+    /* ---------- Modal ---------- */
+    const modal = document.getElementById('modal');
+    const modalBody = document.getElementById('modalBody');
+    modal.addEventListener('click', (e)=>{ if (e.target.dataset.close!==undefined) closeModal(); });
+    document.querySelectorAll('[data-close]').forEach(x=> x.addEventListener('click', closeModal));
+    function openModal(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+    function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+
+    function rowBlock(title, arr){
+      return (arr && arr.length) ? `<div><h4 class="font-semibold">${title}</h4><p class="text-white/80">${arr.join(', ')}</p></div>` : '';
+    }
+
+    function profileHTML(t){
+      const chips = [t.universe, t.alignment, ...(t.focus||[])].filter(Boolean)
+        .map(x=>`<span class="px-2 py-1 rounded-lg bg-white/10 border border-white/10 text-xs">${x}</span>`).join(' ');
+      const gallery = (t.gallery||[]).map((src,i)=>`
+        <img loading="lazy" src="${src}" alt="${t.name} image ${i+1}" class="gallery-item" data-team="${t.id}" data-idx="${i}">
+      `).join('');
+      return `
+        <div class="space-y-6">
+          <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="font-display text-3xl text-gold">${t.name}</h2>
+              <p class="text-white/70">${t.motto || ''}</p>
+              <p class="text-white/80 text-sm mt-1"><strong>Base:</strong> ${t.base || '—'}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">${chips}</div>
+          </header>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="md:col-span-1">
+              <div class="bg-white/5 rounded-2xl overflow-hidden border border-white/10">
+                <img src="${t.image}" alt="${t.name}" class="w-full profile-img object-contain bg-white/5">
+              </div>
+            </div>
+            <div class="md:col-span-2 space-y-5">
+              ${rowBlock('Roster Highlights', t.members || [])}
+              ${rowBlock('Affiliations', t.affiliations || [])}
+              ${rowBlock('Notable Arcs', t.arcs || [])}
+
+              <section>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="font-semibold">Image Gallery</h3>
+                  <button class="px-2 py-1 text-sm rounded bg-white/10 border border-white/20 hover:bg-white/20" data-open-full>Open full-screen</button>
+                </div>
+                <div class="gallery-row gallery-vert">${gallery}</div>
+                <p class="text-xs text-white/60 mt-2">Tip: Tap a thumbnail to open the full-screen viewer. Use ← → keys, wheel to zoom, drag to pan.</p>
+              </section>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openProfile(team){
+      modalBody.innerHTML = profileHTML(team);
+      openModal();
+      setTimeout(() => {
+        document.querySelectorAll('#modalBody img[data-team]').forEach(img=>{
+          img.addEventListener('click', () => {
+            openLightbox(
+              team.gallery.slice(),                // items
+              +img.getAttribute('data-idx') || 0,  // start
+              team.name                            // title
+            );
+          });
+        });
+        const btnFull = document.querySelector('#modalBody [data-open-full]');
+        if (btnFull) { btnFull.addEventListener('click', ()=> openLightbox(team.gallery.slice(), 0, team.name)); }
+      }, 0);
+    }
+
+    /* ---------- Shared Lightbox Controller ---------- */
+    function initLightbox(){
+      const lightbox = document.getElementById('lightbox');
+      const lbImg = document.getElementById('lbImg');
+      const lbPrev = document.getElementById('lbPrev');
+      const lbNext = document.getElementById('lbNext');
+      const lbClose = document.getElementById('lbClose');
+      const lbThumbs = document.getElementById('lbThumbs');
+      const lbCaption = document.getElementById('lbCaption');
+      const lbCount = document.getElementById('lbCount');
+      const thumbPrev = document.getElementById('thumbPrev');
+      const thumbNext = document.getElementById('thumbNext');
+      const lbStage = document.getElementById('lbStage');
+      const lbDownload = document.getElementById('lbDownload');
+      const lbReset = document.getElementById('lbReset');
+      const lbZoomBadge = document.getElementById('lbZoomBadge');
+
+      let items = []; let title = ''; let idx = 0;
+
+      function open(itemsIn, startIndex, titleIn){
+        items = itemsIn || []; idx = startIndex||0; title = titleIn||'';
+        if (!items.length) return;
+        render(); buildThumbs();
+        lightbox.classList.remove('hidden'); lightbox.classList.add('open');
+        document.body.style.overflow='hidden';
+        resetZoom();
+      }
+      function close(){ lightbox.classList.add('hidden'); lightbox.classList.remove('open'); document.body.style.overflow=''; }
+      function render(){
+        const src = items[idx];
+        lbImg.src = src; lbImg.alt = `${title} image ${idx+1}`;
+        lbCaption.textContent = title || 'Gallery';
+        lbCount.textContent = `${idx+1} / ${items.length}`;
+        lbDownload.onclick = ()=> window.open(src, '_blank');
+        highlightThumb();
+      }
+      function buildThumbs(){
+        lbThumbs.innerHTML = items.map((src,i)=>`
+          <button class="lb-thumb" data-i="${i}" title="Image ${i+1}">
+            <img src="${src}" alt="${title} thumbnail ${i+1}" />
+          </button>
+        `).join('');
+        lbThumbs.querySelectorAll('[data-i]').forEach(b=> b.onclick = ()=>{ idx = +b.dataset.i; render(); resetZoom(); ensureThumbVisible(); });
+      }
+      function highlightThumb(){ lbThumbs.querySelectorAll('.lb-thumb').forEach((n,i)=> n.classList.toggle('active', i===idx)); }
+      function ensureThumbVisible(){
+        const active = lbThumbs.querySelectorAll('.lb-thumb')[idx];
+        if (active) active.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+      }
+      function nav(d){ idx=(idx+d+items.length)%items.length; render(); resetZoom(); ensureThumbVisible(); }
+
+      // hooks
+      lbPrev.onclick = ()=> nav(-1);
+      lbNext.onclick = ()=> nav(1);
+      lbClose.onclick = close;
+      lightbox.addEventListener('click', e=>{ if (e.target.hasAttribute('data-lb-close')) close(); });
+      thumbPrev.onclick = ()=> lbThumbs.scrollBy({left:-Math.round(lbThumbs.clientWidth*.9),behavior:'smooth'});
+      thumbNext.onclick = ()=> lbThumbs.scrollBy({left: Math.round(lbThumbs.clientWidth*.9),behavior:'smooth'});
+      window.addEventListener('keydown', e=>{ if (lightbox.classList.contains('hidden')) return; if (e.key==='Escape') close(); if (e.key==='ArrowRight') nav(1); if (e.key==='ArrowLeft') nav(-1); });
+
+      // zoom/pan (same feel as your screenshot)
+      let scale=1, min=1, max=4, tx=0, ty=0, panning=false, sx=0, sy=0, lastTap=0;
+      function apply(){ lbImg.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`; lbZoomBadge.textContent = `${Math.round(scale*100)}%`; lbZoomBadge.classList.toggle('hidden', scale===1); }
+      function resetZoom(){ scale=1; tx=0; ty=0; apply(); }
+      function clamp(){
+        const r=lbImg.getBoundingClientRect(), s=lbStage.getBoundingClientRect();
+        const w=r.width/scale, h=r.height/scale; const mx=Math.max(0,(w*scale-s.width)/2)+20; const my=Math.max(0,(h*scale-s.height)/2)+20;
+        tx=Math.min(mx,Math.max(-mx,tx)); ty=Math.min(my,Math.max(-my,ty));
+      }
+      function zoomAt(x,y,t){
+        const s=lbStage.getBoundingClientRect(); const cx=x-s.left-s.width/2; const cy=y-s.top-s.height/2;
+        const k=t/scale; tx = cx - (cx-tx)*k; ty = cy - (cy-ty)*k; scale=t; clamp(); apply();
+      }
+      lbImg.addEventListener('dblclick', e=>{ e.preventDefault(); scale===1 ? zoomAt(e.clientX,e.clientY,2) : resetZoom(); });
+      lbImg.addEventListener('pointerdown', e=>{
+        const now=Date.now(); if (now-lastTap<300){ e.preventDefault(); scale===1 ? zoomAt(e.clientX,e.clientY,2) : resetZoom(); } lastTap=now;
+        if (scale>1){ panning=true; sx=e.clientX-tx; sy=e.clientY-ty; lbImg.setPointerCapture(e.pointerId); lbImg.classList.add('grabbing'); }
+        else { lbImg.setPointerCapture(e.pointerId); lbImg.dataset.swipeX=e.clientX; }
+      });
+      lbImg.addEventListener('pointermove', e=>{ if(!panning) return; tx=e.clientX-sx; ty=e.clientY-sy; clamp(); apply(); });
+      lbImg.addEventListener('pointerup', e=>{
+        if (panning){ panning=false; lbImg.classList.remove('grabbing'); return; }
+        const start=parseFloat(lbImg.dataset.swipeX||'0'); const dx=e.clientX-start;
+        if (Math.abs(dx)>40 && scale===1){ nav(dx>0?-1:1); }
+      });
+      lbStage.addEventListener('wheel', e=>{ e.preventDefault(); const t=Math.min(max,Math.max(min, scale + (-Math.sign(e.deltaY)*0.2))); zoomAt(e.clientX,e.clientY,t); }, {passive:false});
+      lbReset.onclick = resetZoom;
+
+      // expose opener
+      return function openLightboxPublic(items, startIndex, title){ open(items, startIndex, title); };
+    }
+    const openLightbox = initLightbox();
+
+    /* ---------- Wire up ---------- */
+    applyFilters();
+    [elSearch, elUniverse, elAlignment, elFocus].forEach(el=>{
+      el.addEventListener('input', applyFilters);
+      el.addEventListener('change', applyFilters);
+    });
+    document.getElementById('clearFilters').addEventListener('click', ()=>{
+      elSearch.value=''; elUniverse.value='all'; elAlignment.value='all'; elFocus.value='all'; applyFilters();
+    });
+    function openRandom(){ const t = TEAMS[Math.floor(Math.random()*TEAMS.length)]; openProfile(t); }
+    const rb = document.getElementById('randomBtn'); if (rb) rb.addEventListener('click', openRandom);
+    const rb2 = document.getElementById('randomBtn2'); if (rb2) rb2.addEventListener('click', openRandom);
+  </script>
+</body>
+</html>

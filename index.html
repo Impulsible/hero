@@ -11,27 +11,27 @@
   <title>Heroverse — Superheroes Showcase</title>
   <meta name="description" content="Heroverse — a bold encyclopedia of superheroes, villains, teams, and legendary stories. Built with HTML, TailwindCSS, and JavaScript." />
   <meta name="keywords" content="Heroverse, Superheroes, Villains, Marvel, DC, Powers, Weaknesses, Teams, Comics, Movies" />
-  <meta name="author" content="Your Name" />
-  <link rel="canonical" href="https://your-website.com/" />
+  <meta name="author" content="Henry Osuagwu" />
+  <link rel="canonical" href="https://impulsible.github.io/hero" />
   <meta name="theme-color" content="#121212" />
 
   <!-- Open Graph -->
   <meta property="og:title" content="Heroverse — Superheroes Showcase" />
   <meta property="og:description" content="Dive into the Heroverse: origins, powers, weaknesses, allies, enemies, and stories." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://your-website.com/" />
-  <meta property="og:image" content="https://your-website.com/preview.jpg" />
+  <meta property="og:url" content="https://impulsible.github.io/hero" />
+  <meta property="og:image" content="images/heroverse.png" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Heroverse — Superheroes Showcase" />
   <meta name="twitter:description" content="Explore an encyclopedia of superheroes, villains, teams, and legendary stories." />
-  <meta name="twitter:image" content="https://your-website.com/preview.jpg" />
+  <meta name="twitter:image" content="images/heroverse.png" />
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon" />
 
-  <!-- Fonts -->
+  <!-- Fonts (mobile-first perf: preconnects) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -81,7 +81,19 @@
     .carousel-slide.active { position: relative; opacity: 1; transform: scale(1); }
 
     .glow-hover:hover { text-shadow: 0 0 10px rgba(255,215,0,.7), 0 0 20px rgba(255,215,0,.5); }
+
+    .carousel { position: relative; }
+.carousel-slide {
+  position: absolute; inset: 0;
+  opacity: 0; transform: scale(.985);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.carousel-slide.active {
+  position: relative; opacity: 1; transform: scale(1);
+}
+
   </style>
+  
 </head>
 <body id="top" class="bg-dark text-white">
   <!-- Skip link (a11y) -->
@@ -151,28 +163,104 @@
               <a href="heroes.html" class="px-4 sm:px-5 py-2.5 rounded-xl font-semibold border border-white/20 hover:border-gold transition">🎲 Random Hero</a>
             </div>
           </div>
+<!-- FEATURED CAROUSEL -->
+<div id="featured-heroes" class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal">
+  <h3 class="font-display text-2xl text-gold mb-3 text-center">Featured Heroes</h3>
 
-          <!-- FEATURED CAROUSEL -->
-          <div class="bg-white/5 p-3 sm:p-4 rounded-3xl comic-shadow reveal">
-            <h3 class="font-display text-2xl text-gold mb-3 text-center">Featured Heroes</h3>
-            <div class="carousel rounded-2xl overflow-hidden h-48 sm:h-56">
-              <div class="carousel-slide active">
-                <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/en/3/35/Supermanflying.png" alt="Superman" class="w-full h-48 sm:h-56 object-contain bg-white/5">
+  <div class="carousel relative rounded-2xl overflow-hidden h-64 sm:h-80 bg-dark">
+    <!-- Slides will be injected here -->
+  </div>
+
+  <!-- Dots -->
+  <div class="dots flex justify-center gap-2 mt-3"></div>
+</div>
+
+<script>
+  const HEROES = [
+    { name: "Gal Gadot",         src: "images/gal.webp",   alt: "Wonder Woman" },
+    { name: "Barry Allen",         src: "images/barry.webp",         alt: "The Flash" },
+    { name: "Tobey Maguire",           src: "images/toby.webp",     alt: "Spider-Man" },
+    { name: "Dinah Drake",         src: "images/dinah.webp",   alt: "Black Canary" },
+    { name: "Clark Kent (Tyler Hoechlin)", src: "images/tyler.webp",      alt: "Superman" },
+    { name: "Matt Murdock",               src: "images/matt.webp",  alt: "Daredevil" },
+    { name: "Benedict Cumberbatch",             src: "images/ben.webp",   alt: "Doctor Strange" },
+    { name: "Scarlett Johansson",          src: "images/scar.webp",    alt: "Black Widow" },
+    { name: "Oliver Queen",          src: "images/oliver.webp",       alt: "Oliver Queen (Green Arrow)" },
+    { name: "Elizabeth Olsen",        src: "images/elizabeth.webp",  alt: "Scarlet Witch" },
+  ];
+
+  // --- Fisher–Yates shuffle ---
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // --- Build slides + dots ---
+  (function buildFeaturedCarousel() {
+    const root = document.getElementById("featured-heroes");
+    const carousel = root.querySelector(".carousel");
+    const dotsBar  = root.querySelector(".dots");
+
+    const shuffled = shuffle(HEROES);
+
+    // Create slides
+    shuffled.forEach((hero, idx) => {
+      const slide = document.createElement("div");
+      slide.className = "carousel-slide w-full h-full" + (idx === 0 ? " active" : "");
+      slide.innerHTML = `
+        <div class="relative w-full h-full p-2">
+          <!-- Card frame -->
+          <div class="w-full h-full bg-white/5 rounded-xl border border-white/10 flex items-center justify-center">
+            <!-- Image always fully visible -->
+            <img loading="lazy" src="${hero.src}" alt="${hero.alt}"
+                 class="max-h-full max-w-full object-contain rounded-lg pointer-events-none" />
+          </div>
+          <!-- Name overlay -->
+          <div class="absolute inset-x-2 bottom-2">
+            <div class="rounded-xl overflow-hidden border border-white/10">
+              <div class="bg-gradient-to-t from-black/70 to-black/10 px-3 py-2">
+                <p class="text-center font-semibold tracking-wide">
+                  ${hero.name}
+                </p>
               </div>
-              <div class="carousel-slide">
-                <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/en/8/85/Batman_DC_Comics.png" alt="Batman" class="w-full h-48 sm:h-56 object-contain bg-white/5">
-              </div>
-              <div class="carousel-slide">
-                <img loading="lazy" src="https://upload.wikimedia.org/wikipedia/en/0/0c/Spiderman50.jpg" alt="Spider-Man" class="w-full h-48 sm:h-56 object-contain bg-white/5">
-              </div>
-            </div>
-            <div class="flex justify-center gap-2 mt-3">
-              <button data-dot="0" class="w-2.5 h-2.5 rounded-full bg-gold/80" aria-label="Slide 1"></button>
-              <button data-dot="1" class="w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/70 transition" aria-label="Slide 2"></button>
-              <button data-dot="2" class="w-2.5 h-2.5 rounded-full bg-white/40 hover:bg-white/70 transition" aria-label="Slide 3"></button>
             </div>
           </div>
-        </div>
+        </div>`;
+      carousel.appendChild(slide);
+    });
+
+    // Create dots
+    shuffled.forEach((_, idx) => {
+      const btn = document.createElement("button");
+      btn.setAttribute("data-dot", idx);
+      btn.setAttribute("aria-label", `Slide ${idx + 1}`);
+      btn.className = "w-2.5 h-2.5 rounded-full " + (idx === 0 ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition");
+      dotsBar.appendChild(btn);
+    });
+
+    // Minimal navigation
+    const slides = Array.from(carousel.querySelectorAll(".carousel-slide"));
+    const dots   = Array.from(dotsBar.querySelectorAll("[data-dot]"));
+
+    function activate(index) {
+      slides.forEach((s, i) => s.classList.toggle("active", i === index));
+      dots.forEach((d, i) => d.className =
+        "w-2.5 h-2.5 rounded-full " + (i === index ? "bg-gold/80" : "bg-white/40 hover:bg-white/70 transition")
+      );
+    }
+
+    dots.forEach(d => d.addEventListener("click", () => activate(+d.dataset.dot)));
+
+    // Optional: auto-advance every 6s (disable if you already do this elsewhere)
+    // let current = 0;
+    // setInterval(() => { current = (current + 1) % slides.length; activate(current); }, 6000);
+  })();
+</script>
+
 
         <!-- QUICK LINKS -->
         <div class="mt-8 sm:mt-10 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 text-center">

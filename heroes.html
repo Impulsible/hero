@@ -389,7 +389,7 @@
     const io = new IntersectionObserver((entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }), { threshold: 0.12 });
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    /* ---------- Data helpers (same) ---------- */
+    /* ---------- Data helpers ---------- */
     const makeId = s => s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'');
     const img = (seed) => `https://picsum.photos/seed/${encodeURIComponent(seed)}/520/600`;
     const autoGal = (id) => [
@@ -399,7 +399,7 @@
     ];
     const M='Marvel', D='DC', O='Original', H='Hero', AH='Anti-hero';
 
-    /* ===== Roster (trimmed) ===== */
+    /* ===== Roster ===== */
     const RAW = {
       Marvel: [
         'Spider-Man (Peter Parker)','Iron Man (Tony Stark)','Captain America (Steve Rogers)','Thor',
