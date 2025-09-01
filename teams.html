@@ -6,8 +6,18 @@
 
   <title>Teams & Alliances — Heroverse</title>
   <meta name="description" content="Explore superhero and supervillain teams across universes — origins, members, bases, affiliations, and galleries." />
-  <meta name="author" content="Your Name" />
-  <link rel="icon" href="favicon.ico" />
+  <meta name="author" content="Henry Osuagwu" />
+  
+  <!-- Favicon & PWA icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="icon" href="images/favicon.ico">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+
+<!-- pinned tabs -->
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -358,44 +368,45 @@
 
     /* ---------- Teams roster ---------- */
     const BASE = [
-      {name:'Avengers', universe:M, alignment:H, focus:['tech','cosmic'], base:'Avengers Tower, NYC', members:['Iron Man','Captain America','Thor','Hulk','Black Widow','Hawkeye']},
-      {name:'X-Men', universe:M, alignment:H, focus:['mutant'], base:'Xavier’s School, Westchester', members:['Professor X','Cyclops','Jean Grey','Wolverine','Storm','Beast']},
-      {name:'Fantastic Four', universe:M, alignment:H, focus:['tech','cosmic'], base:'Baxter Building, NYC', members:['Mr. Fantastic','Invisible Woman','Human Torch','Thing']},
-      {name:'Guardians of the Galaxy', universe:M, alignment:H, focus:['cosmic'], base:'Milano / Knowhere', members:['Star-Lord','Gamora','Drax','Rocket','Groot','Mantis']},
-      {name:'Defenders', universe:M, alignment:H, focus:['street'], base:'NYC', members:['Daredevil','Jessica Jones','Luke Cage','Iron Fist']},
-      {name:'Thunderbolts', universe:M, alignment:AH, focus:['tech','street'], base:'Mobile', members:['Baron Zemo','Taskmaster','Yelena','US Agent']},
-      {name:'S.H.I.E.L.D.', universe:M, alignment:H, focus:['government','tech'], base:'Helicarrier', members:['Nick Fury','Maria Hill','Phil Coulson']},
-      {name:'Hydra', universe:M, alignment:V, focus:['villainy','tech'], base:'Hidden cells', members:['Red Skull','Baron Strucker','Arnim Zola']},
-      {name:'Sinister Six', universe:M, alignment:V, focus:['villainy','tech'], base:'NYC', members:['Doc Ock','Vulture','Electro','Sandman','Mysterio','Kraven']},
-      {name:'Brotherhood of Mutants', universe:M, alignment:V, focus:['mutant','villainy'], base:'Various', members:['Magneto','Mystique','Sabretooth','Toad']},
-      {name:'Hellfire Club', universe:M, alignment:N, focus:['mutant','intellect'], base:'NYC', members:['Emma Frost','Sebastian Shaw']},
-      {name:'The Hand', universe:M, alignment:V, focus:['assassins','magic'], base:'Japan', members:['Elektra (former)','Nobu']},
-      {name:'A-Force', universe:M, alignment:H, focus:['tech','cosmic'], base:'Arcadia', members:['She-Hulk','Captain Marvel','Nico Minoru']},
+  {name:'Avengers', universe:M, alignment:H, focus:['tech','cosmic'], base:'Avengers Tower, NYC', members:['Iron Man','Captain America','Thor','Hulk','Black Widow','Hawkeye']},
+  {name:'X-Men', universe:M, alignment:H, focus:['mutant'], base:'Xavier’s School, Westchester', members:['Professor X','Cyclops','Jean Grey','Wolverine','Storm','Beast']},
+  {name:'Fantastic Four', universe:M, alignment:H, focus:['tech','cosmic'], base:'Baxter Building, NYC', members:['Mr. Fantastic','Invisible Woman','Human Torch','Thing']},
+  {name:'Guardians of the Galaxy', universe:M, alignment:H, focus:['cosmic'], base:'Milano / Knowhere', members:['Star-Lord','Gamora','Drax','Rocket','Groot','Mantis']},
+  {name:'Defenders', universe:M, alignment:H, focus:['street'], base:'NYC', members:['Daredevil','Jessica Jones','Luke Cage','Iron Fist']},
+  {name:'Thunderbolts', universe:M, alignment:AH, focus:['tech','street'], base:'Mobile', members:['Baron Zemo','Taskmaster','Yelena','US Agent']},
+  {name:'S.H.I.E.L.D.', universe:M, alignment:H, focus:['government','tech'], base:'Helicarrier', members:['Nick Fury','Maria Hill','Phil Coulson']},
+  {name:'Hydra', universe:M, alignment:V, focus:['villainy','tech'], base:'Hidden cells', members:['Red Skull','Baron Strucker','Arnim Zola']},
+  {name:'Sinister Six', universe:M, alignment:V, focus:['villainy','tech'], base:'NYC', members:['Doc Ock','Vulture','Electro','Sandman','Mysterio','Kraven']},
+  {name:'Brotherhood of Mutants', universe:M, alignment:V, focus:['mutant','villainy'], base:'Various', members:['Magneto','Mystique','Sabretooth','Toad']},
+  {name:'Hellfire Club', universe:M, alignment:N, focus:['mutant','intellect'], base:'NYC', members:['Emma Frost','Sebastian Shaw']},
+  {name:'The Hand', universe:M, alignment:V, focus:['assassins','magic'], base:'Japan', members:['Elektra (former)','Nobu']},
+  {name:'A-Force', universe:M, alignment:H, focus:['tech','cosmic'], base:'Arcadia', members:['She-Hulk','Captain Marvel','Nico Minoru']},
 
-      {name:'Justice League', universe:D, alignment:H, focus:['tech','magic','cosmic'], base:'Watchtower', members:['Superman','Batman','Wonder Woman','Flash','Aquaman','Green Lantern']},
-      {name:'Justice Society of America', universe:D, alignment:H, focus:['magic','tech'], base:'Civic City', members:['Doctor Fate','Hawkman','Power Girl','Flash (Jay Garrick)']},
-      {name:'Teen Titans', universe:D, alignment:H, focus:['street','magic'], base:'Titans Tower', members:['Robin','Starfire','Raven','Beast Boy','Cyborg']},
-      {name:'Doom Patrol', universe:D, alignment:H, focus:['tech','weird'], base:'Doom Manor', members:['Robotman','Negative Man','Elasti-Woman','Crazy Jane']},
-      {name:'Birds of Prey', universe:D, alignment:H, focus:['street','tech'], base:'Gotham', members:['Oracle','Black Canary','Huntress']},
-      {name:'Suicide Squad', universe:D, alignment:AH, focus:['government','assassins'], base:'Belle Reve', members:['Harley Quinn','Deadshot','Captain Boomerang']},
-      {name:'Outsiders', universe:D, alignment:H, focus:['street','tech'], base:'Gotham', members:['Batman','Geo-Force','Katana','Black Lightning']},
-      {name:'Green Lantern Corps', universe:D, alignment:H, focus:['cosmic','energy'], base:'Oa', members:['Hal Jordan','John Stewart','Kyle Rayner','Kilowog']},
-      {name:'Legion of Super-Heroes', universe:D, alignment:H, focus:['cosmic','tech'], base:'31st Century', members:['Saturn Girl','Lightning Lad','Cosmic Boy']},
-      {name:'Injustice League', universe:D, alignment:V, focus:['villainy'], base:'Secret', members:['Lex Luthor','Joker','Cheetah','Black Manta']},
-      {name:'Crime Syndicate', universe:D, alignment:V, focus:['villainy','cosmic'], base:'Earth-3', members:['Ultraman','Owlman','Superwoman']},
-      {name:'League of Assassins', universe:D, alignment:V, focus:['assassins','magic'], base:'Nanda Parbat', members:['Ra’s al Ghul','Talia al Ghul']},
+  {name:'Justice League', universe:D, alignment:H, focus:['tech','magic','cosmic'], base:'Watchtower', members:['Superman','Batman','Wonder Woman','Flash','Aquaman','Green Lantern']},
+  {name:'Justice Society of America', universe:D, alignment:H, focus:['magic','tech'], base:'Civic City', members:['Doctor Fate','Hawkman','Power Girl','Flash (Jay Garrick)']},
+  {name:'Teen Titans', universe:D, alignment:H, focus:['street','magic'], base:'Titans Tower', members:['Robin','Starfire','Raven','Beast Boy','Cyborg']},
+  {name:'Doom Patrol', universe:D, alignment:H, focus:['tech','weird'], base:'Doom Manor', members:['Robotman','Negative Man','Elasti-Woman','Crazy Jane']},
+  {name:'Birds of Prey', universe:D, alignment:H, focus:['street','tech'], base:'Gotham', members:['Oracle','Black Canary','Huntress']},
+  {name:'Suicide Squad', universe:D, alignment:AH, focus:['government','assassins'], base:'Belle Reve', members:['Harley Quinn','Deadshot','Captain Boomerang']},
+  {name:'Outsiders', universe:D, alignment:H, focus:['street','tech'], base:'Gotham', members:['Batman','Geo-Force','Katana','Black Lightning']},
+  {name:'Green Lantern Corps', universe:D, alignment:H, focus:['cosmic','energy'], base:'Oa', members:['Hal Jordan','John Stewart','Kyle Rayner','Kilowog']},
+  {name:'Legion of Super-Heroes', universe:D, alignment:H, focus:['cosmic','tech'], base:'31st Century', members:['Saturn Girl','Lightning Lad','Cosmic Boy']},
+  {name:'Injustice League', universe:D, alignment:V, focus:['villainy'], base:'Secret', members:['Lex Luthor','Joker','Cheetah','Black Manta']},
+  {name:'Crime Syndicate', universe:D, alignment:V, focus:['villainy','cosmic'], base:'Earth-3', members:['Ultraman','Owlman','Superwoman']},
+  {name:'League of Assassins', universe:D, alignment:V, focus:['assassins','magic'], base:'Nanda Parbat', members:['Ra’s al Ghul','Talia al Ghul']},
+  {name:'Legends of Tomorrow', universe:D, alignment:H, focus:['time travel','multiverse'], base:'Waverider', members:['Rip Hunter','Sara Lance','Ray Palmer','Mick Rory','Zari Tomaz','Nate Heywood']},
 
-      {name:'Watchmen', universe:O, alignment:AH, focus:['street'], base:'NYC', members:['Rorschach','Nite Owl','Silk Spectre','Dr. Manhattan','Ozymandias']},
-      {name:'The Seven', universe:O, alignment:V, focus:['villainy','tech'], base:'Vought Tower', members:['Homelander','Queen Maeve','A-Train']},
-      {name:'Guardians of the Globe', universe:O, alignment:H, focus:['cosmic'], base:'Global HQ', members:['Immortal','Dupli-Kate','Rex Splode','Monster Girl']},
-      {name:'Teen Team', universe:O, alignment:H, focus:['street','tech'], base:'Mobile', members:['Robot','Atom Eve','Rex Splode']},
-      {name:'Viltrum Empire', universe:O, alignment:V, focus:['cosmic','villainy'], base:'Viltrum', members:['Thragg','Conquest','Omni-Man (early)']},
-      {name:'Ninja Turtles', universe:O, alignment:H, focus:['street','martial arts'], base:'NYC Sewers', members:['Leonardo','Michelangelo','Donatello','Raphael']},
-      {name:'Foot Clan', universe:O, alignment:V, focus:['assassins'], base:'NYC', members:['Shredder','Karai']},
-      {name:'Team Avatar (Gaang)', universe:O, alignment:H, focus:['magic'], base:'Ba Sing Se / Mobile', members:['Aang','Katara','Sokka','Toph','Zuko']},
-      {name:'Z Fighters', universe:O, alignment:H, focus:['cosmic','martial arts'], base:'Earth', members:['Goku','Vegeta','Gohan','Piccolo']},
-      {name:'The Authority', universe:O, alignment:AH, focus:['tech','cosmic'], base:'Carrier', members:['Midnighter','Apollo','Jenny Sparks']},
-    ].map(t => ({ id: makeId(t.name), image: img(t.name+'-team'), ...t }));
+  {name:'Watchmen', universe:O, alignment:AH, focus:['street'], base:'NYC', members:['Rorschach','Nite Owl','Silk Spectre','Dr. Manhattan','Ozymandias']},
+  {name:'The Seven', universe:O, alignment:V, focus:['villainy','tech'], base:'Vought Tower', members:['Homelander','Queen Maeve','A-Train']},
+  {name:'Guardians of the Globe', universe:O, alignment:H, focus:['cosmic'], base:'Global HQ', members:['Immortal','Dupli-Kate','Rex Splode','Monster Girl']},
+  {name:'Teen Team', universe:O, alignment:H, focus:['street','tech'], base:'Mobile', members:['Robot','Atom Eve','Rex Splode']},
+  {name:'Viltrum Empire', universe:O, alignment:V, focus:['cosmic','villainy'], base:'Viltrum', members:['Thragg','Conquest','Omni-Man (early)']},
+  {name:'Ninja Turtles', universe:O, alignment:H, focus:['street','martial arts'], base:'NYC Sewers', members:['Leonardo','Michelangelo','Donatello','Raphael']},
+  {name:'Foot Clan', universe:O, alignment:V, focus:['assassins'], base:'NYC', members:['Shredder','Karai']},
+  {name:'Team Avatar (Gaang)', universe:O, alignment:H, focus:['magic'], base:'Ba Sing Se / Mobile', members:['Aang','Katara','Sokka','Toph','Zuko']},
+  {name:'Z Fighters', universe:O, alignment:H, focus:['cosmic','martial arts'], base:'Earth', members:['Goku','Vegeta','Gohan','Piccolo']},
+  {name:'The Authority', universe:O, alignment:AH, focus:['tech','cosmic'], base:'Carrier', members:['Midnighter','Apollo','Jenny Sparks']},
+].map(t => ({ id: makeId(t.name), image: img(t.name+'-team'), ...t }));
 
     const DETAILS = {
       'avengers': {

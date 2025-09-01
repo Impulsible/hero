@@ -6,8 +6,18 @@
 
   <title>Hall of Heroes — Heroverse</title>
   <meta name="description" content="Browse the Hall of Heroes — explore origins, powers, weaknesses, allies, enemies, and appearances across the Heroverse." />
-  <meta name="author" content="Your Name" />
-  <link rel="icon" href="favicon.ico" />
+  <meta name="author" content="Henry Osuagwu" />
+
+  <!-- Favicon & PWA icons -->
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+<link rel="icon" href="images/favicon.ico">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+
+<!-- pinned tabs -->
+<link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -199,7 +209,13 @@
         min-width:100%; height:auto; aspect-ratio:16/10; scroll-snap-align:start;
       }
     }
+    .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
   </style>
+  
 </head>
 <body class="bg-dark text-white">
   <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
@@ -215,17 +231,17 @@
         <span class="sr-only">Menu</span> ☰
       </button>
 
-      <nav class="hidden md:flex items-center gap-5 sm:gap-6 text-sm" aria-label="Primary">
-        <a class="hover:text-gold" href="heroes.html" aria-current="page">Hall of Heroes</a>
-        <a class="hover:text-gold" href="villains.html">Rogues Gallery</a>
-        <a class="hover:text-gold" href="teams.html">Teams</a>
-        <a class="hover:text-gold" href="stories.html">Stories</a>
-        <a class="hover:text-gold" href="rankings.html">Rankings</a>
-        <a class="hover:text-gold" href="news.html">News</a>
-        <a class="hover:text-gold" href="about.html">About</a>
-        <a class="hover:text-gold" href="contact.html">Contact</a>
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
+        <a href="ratings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
       </nav>
-
+  
       <button id="randomBtn" class="hidden sm:inline-flex items-center gap-2 bg-hero text-white px-3 sm:px-4 py-2 rounded-xl hover:brightness-110 transition">
         🎲 Random Hero
       </button>
