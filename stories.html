@@ -64,6 +64,12 @@
       background-repeat:no-repeat;
       padding-right:2.25rem
     }
+
+     .active-nav{
+      background:linear-gradient(90deg,#FFD70022,#E5091422);
+      border-color:#FFD700;
+      color:#FFD700 !important;
+    }
     .card-img{height:140px}
     .modal{position:fixed;inset:0;display:none}
     .modal.open{display:block}
@@ -84,15 +90,15 @@
 
       <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">☰</button>
 
-      <nav class="hidden md:flex items-center gap-5 sm:gap-6 text-sm" aria-label="Primary">
-        <a class="hover:text-gold" href="heroes.html">Hall of Heroes</a>
-        <a class="hover:text-gold" href="villains.html">Rogues Gallery</a>
-        <a class="hover:text-gold" href="teams.html">Teams</a>
-        <a class="hover:text-gold" href="stories.html" aria-current="page">Stories</a>
-        <a class="hover:text-gold" href="rankings.html">Rankings</a>
-        <a class="hover:text-gold" href="news.html">News</a>
-        <a class="hover:text-gold" href="about.html">About</a>
-        <a class="hover:text-gold" href="contact.html">Contact</a>
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
+        <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
+        <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
+        <a href="stories.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Stories</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rankings</a>
+        <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
+        <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
+        <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
       </nav>
     </div>
 

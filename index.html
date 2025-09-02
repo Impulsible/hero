@@ -309,41 +309,43 @@
     </section>
 
     <!-- NEWS -->
-    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14">
-      <header class="text-center mb-6 sm:mb-8 reveal">
-        <h2 class="font-display text-3xl sm:text-4xl">News & Updates</h2>
-        <p class="text-white/70">Latest movies, comics, and series chatter</p>
-      </header>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
-          <img loading="lazy" src="https://picsum.photos/600/300?random=11" alt="News feature" class="w-full h-40 sm:h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-semibold">New Team-Up Trailer Drops</h3>
-            <p class="text-white/70 text-sm mt-1">Cosmic stakes tease a cross-universe battle.</p>
-            <a href="news.html" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
-          </div>
-        </article>
-        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
-          <img loading="lazy" src="https://picsum.photos/600/300?random=12" alt="News feature" class="w-full h-40 sm:h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-semibold">Anniversary Issue Announced</h3>
-            <p class="text-white/70 text-sm mt-1">A landmark comic celebrates 1000 issues.</p>
-            <a href="news.html" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
-          </div>
-        </article>
-        <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
-          <img loading="lazy" src="https://picsum.photos/600/300?random=13" alt="News feature" class="w-full h-40 sm:h-48 object-cover">
-          <div class="p-4">
-            <h3 class="font-semibold">Animated Series Renewed</h3>
-            <p class="text-white/70 text-sm mt-1">Fan-favorite returns for another season.</p>
-            <a href="news.html" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
-          </div>
-        </article>
-      </div>
-      <div class="text-center mt-7 reveal">
-        <a href="news.html" class="inline-block bg-primary px-5 py-2.5 rounded-xl font-semibold hover:brightness-110 transition">See all news</a>
-      </div>
-    </section>
+    <!-- NEWS -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-14">
+  <header class="text-center mb-6 sm:mb-8 reveal">
+    <h2 class="font-display text-3xl sm:text-4xl">News & Updates</h2>
+    <p class="text-white/70">Latest movies, comics, and series chatter</p>
+  </header>
+
+  <!-- Dynamic news will render here -->
+  <div id="featuredNews" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+  <div class="text-center mt-7 reveal">
+    <a href="news.html" class="inline-block bg-primary px-5 py-2.5 rounded-xl font-semibold hover:brightness-110 transition">See all news</a>
+  </div>
+</section>
+
+<!-- Scripts -->
+<script src="assets/news-data.js"></script>
+<script>
+  (function(){
+    // Pick 3 random news items from shared data
+    const items = window.HeroverseNews.pickRandom(3);
+    const container = document.getElementById('featuredNews');
+
+    // Render the cards
+    container.innerHTML = items.map(n => `
+      <article class="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:translate-y-[-2px] hover:bg-white/10 transition comic-shadow reveal">
+        <img loading="lazy" src="${n.img}" alt="${n.title}" class="w-full h-40 sm:h-48 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">${n.title}</h3>
+          <p class="text-white/70 text-sm mt-1">${n.summary}</p>
+          <a href="news.html#${n.id}" class="inline-block mt-3 text-gold hover:underline">Read more →</a>
+        </div>
+      </article>
+    `).join('');
+  })();
+</script>
+
 
     <!-- CTA -->
     <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 sm:pb-16">

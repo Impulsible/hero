@@ -5,7 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Rankings & Stats — Heroverse</title>
   <meta name="description" content="Vote and rank a massive roster of heroes. Explore categories, spotlights, charts, and simulate DC vs Marvel matchups with user-tuned styles. Includes Top Movers ticker, CSV export, and add/remove votes." />
-  <link rel="icon" href="favicon.ico" />
+
+  <!-- Favicon & PWA icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16.png">
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+  <link rel="manifest" href="manifest.json">
+
+  <!-- pinned tabs -->
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="images/android-chrome-512x512.png">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,22 +43,17 @@
       }
     }
   </script>
+
   <style>
-    html {
-      scroll-behavior: smooth;
+    html { scroll-behavior: smooth; }
+    body::before{
+      content:"";position:fixed;inset:0;z-index:-1;background:
+      radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
+      radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
+      radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
+      repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
+      background-color:#0d0f13;
     }
-
-    body::before {
-      content: "";
-      position: fixed; inset: 0; z-index: -1;
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255,215,0,.06), transparent 40%),
-        radial-gradient(circle at 80% 0%, rgba(229,9,20,.05), transparent 35%),
-        radial-gradient(circle at 0% 100%, rgba(0,85,255,.06), transparent 40%),
-        repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.04), rgba(255,255,255,.04) 2px, transparent 3px, transparent 6px);
-      background-color: #0d0f13;
-    }
-
     .active-nav{
       background:linear-gradient(90deg,#FFD70022,#E5091422);
       border-color:#FFD700;
@@ -78,25 +83,64 @@
     @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
   </style>
 </head>
-<body class="bg-dark text-white">
+
+<body id="top" class="bg-dark text-white">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-gold text-dark px-3 py-2 rounded">Skip to content</a>
+
   <!-- NAV -->
   <header class="sticky top-0 z-40 bg-dark/70 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-      <a href="index.html" class="text-2xl sm:text-3xl font-display tracking-widest text-gold">Heroverse</a>
+      <!-- Logo -->
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-2xl sm:text-3xl font-display tracking-widest text-gold drop-shadow">Heroverse</span>
+      </a>
+
+      <!-- Mobile menu button -->
+      <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg border border-white/20 hover:bg-white/10" aria-label="Open menu" aria-expanded="false">
+        <span class="sr-only">Menu</span> ☰
+      </button>
+
+      <!-- Desktop nav -->
       <nav class="hidden md:flex items-center gap-4 text-sm">
         <a href="heroes.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Hall of Heroes</a>
         <a href="villains.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Rogues Gallery</a>
         <a href="teams.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Teams</a>
         <a href="stories.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Stories</a>
-        <a href="ratings.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Rankings</a>
+        <a href="rankings.html" class="px-3 py-2 rounded-lg border active-nav" aria-current="page">Rankings</a>
         <a href="news.html" class="px-3 py-2 rounded-lg hover:bg-white/10">News</a>
         <a href="about.html" class="px-3 py-2 rounded-lg hover:bg-white/10">About</a>
         <a href="contact.html" class="px-3 py-2 rounded-lg hover:bg-white/10">Contact</a>
       </nav>
     </div>
+
+    <!-- Mobile nav drawer (same colorful grid style) -->
+    <nav id="mobileNav" class="md:hidden hidden border-t border-gold/20 bg-gradient-to-b from-[#0b0f19] via-[#0c1324] to-[#0b0f19]">
+      <div class="max-w-7xl mx-auto px-4 py-3 grid grid-cols-2 gap-3 text-sm">
+        <a class="rounded-lg p-3 border border-red-400/40 bg-red-500/15 hover:bg-red-500/25 transition" href="heroes.html">Hall of Heroes</a>
+        <a class="rounded-lg p-3 border border-purple-400/40 bg-purple-500/15 hover:bg-purple-500/25 transition" href="villains.html">Rogues Gallery</a>
+        <a class="rounded-lg p-3 border border-yellow-400/40 bg-yellow-500/20 text-white hover:bg-yellow-500/30 transition" href="teams.html">Teams</a>
+        <a class="rounded-lg p-3 border border-blue-400/40 bg-blue-500/15 hover:bg-blue-500/25 transition" href="stories.html">Stories</a>
+        <a class="rounded-lg p-3 border border-green-400/40 bg-green-500/15 hover:bg-green-500/25 transition" href="rankings.html">Rankings</a>
+        <a class="rounded-lg p-3 border border-pink-400/40 bg-pink-500/15 hover:bg-pink-500/25 transition" href="news.html">News</a>
+        <a class="rounded-lg p-3 border border-cyan-400/40 bg-cyan-500/15 hover:bg-cyan-500/25 transition" href="about.html">About</a>
+        <a class="rounded-lg p-3 border border-orange-400/40 bg-orange-500/15 hover:bg-orange-500/25 transition" href="contact.html">Contact</a>
+      </div>
+    </nav>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <!-- Mobile nav toggle script -->
+  <script>
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    if (navToggle && mobileNav) {
+      navToggle.addEventListener('click', () => {
+        const hidden = mobileNav.classList.toggle('hidden');
+        navToggle.setAttribute('aria-expanded', (!hidden).toString());
+      });
+    }
+  </script>
+
+  <main id="main" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <header class="text-center mb-8">
       <h1 class="font-display text-4xl sm:text-5xl">Rankings & Stats</h1>
       <p class="text-white/70 max-w-2xl mx-auto mt-2">Vote on every hero, explore categories, spotlights, charts — and run a user-tuned DC vs Marvel simulator with matchup styles.</p>
@@ -301,7 +345,7 @@
     </section>
   </main>
 
-    <!-- Floating “Skip to Top” button -->
+  <!-- Floating “Skip to Top” button -->
   <a id="toTop" href="#top"
      class="hidden fixed bottom-4 right-4 z-50 rounded-full bg-gold text-dark px-3 py-2 shadow-lg border border-white/20
             focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gold"
@@ -318,9 +362,8 @@
     </p>
   </footer>
 
-  <!-- Minimal JS -->
+  <!-- Footer dynamics -->
   <script>
-    // Footer dynamics
     document.getElementById("year").textContent = new Date().getFullYear();
     document.getElementById("lastModified").textContent = document.lastModified;
   </script>
@@ -329,7 +372,7 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
-     // Show “Skip to top” button after scrolling
+    // Show “Skip to top” button after scrolling
     const toTop = document.getElementById('toTop');
     const toggleToTop = () => {
       if (window.scrollY > 400) toTop.classList.remove('hidden');
@@ -337,12 +380,11 @@
     };
     toggleToTop();
     window.addEventListener('scroll', toggleToTop, { passive: true });
-    // Footer
-    document.getElementById('year').textContent = new Date().getFullYear();
 
     // ===== ROSTER =====
     // tags: mystic, tech, strategist, cosmic, water, flight, rage
     const HEROES = [
+      /* --- your HEROES array unchanged --- */
       // DC
       {id:'superman',name:'Superman',universe:'DC',power:98,speed:99,int:85,apps:1400,tags:['flight','cosmic']},
       {id:'supergirl',name:'Supergirl',universe:'DC',power:94,speed:95,int:83,apps:500,tags:['flight','cosmic']},
@@ -425,18 +467,12 @@
     const votes = JSON.parse(localStorage.getItem(VOTE_KEY) || '{}');
     const now = ()=>Date.now();
 
-    function readLog(){
-      try{ return JSON.parse(sessionStorage.getItem(LOG_KEY) || '[]'); }catch{ return []; }
-    }
-    function writeLog(arr){
-      try{ sessionStorage.setItem(LOG_KEY, JSON.stringify(arr)); }catch{}
-    }
+    function readLog(){ try{ return JSON.parse(sessionStorage.getItem(LOG_KEY) || '[]'); }catch{ return []; } }
+    function writeLog(arr){ try{ sessionStorage.setItem(LOG_KEY, JSON.stringify(arr)); }catch{} }
     function recordVote(id, delta){
-      // update counts
       const cur = votes[id]||0;
       votes[id] = Math.max(0, cur + delta);
       localStorage.setItem(VOTE_KEY, JSON.stringify(votes));
-      // add log entry and prune > 5 min
       const L = readLog();
       const cut = now() - 5*60*1000;
       const newLog = L.filter(e=>e.t >= cut);
@@ -491,16 +527,16 @@
       renderCategories();
       renderChart();
       populateCompareDropdowns();
-      renderAllHeroes(true); // refresh list chunk
+      renderAllHeroes(true);
       computeMovers();
     }
 
-    // Voting (+/-1 with float animation)
+    // Voting animation
     document.addEventListener('click', e=>{
       if(e.target.dataset.vote){
         const id = e.target.dataset.vote;
         const delta = parseInt(e.target.dataset.delta||'1',10);
-        if (delta<0 && (votes[id]||0)<=0) return; // don't go negative
+        if (delta<0 && (votes[id]||0)<=0) return;
         recordVote(id, delta);
         renderTable();
 
@@ -845,20 +881,21 @@
     }
     function styleAdjust(a,b){
       let delta = 0;
+      const hasTag = (who, t) => (who.tags||[]).includes(t);
       if (styleMagic.checked){
-        const aMystic = has(a,'mystic'), bMystic = has(b,'mystic');
+        const aMystic = hasTag(a,'mystic'), bMystic = hasTag(b,'mystic');
         if (aMystic && !bMystic) delta += 3;
         if (bMystic && !aMystic) delta -= 3;
       }
       if (styleTechCounters.checked){
-        const aTech = has(a,'tech'), bTech = has(b,'tech');
-        const aMystic = has(a,'mystic'), bMystic = has(b,'mystic');
+        const aTech = hasTag(a,'tech'), bTech = hasTag(b,'tech');
+        const aMystic = hasTag(a,'mystic'), bMystic = hasTag(b,'mystic');
         if (aTech && bMystic) delta += 2;
         if (bTech && aMystic) delta -= 2;
       }
       if (styleLargeArena.checked){
-        const aMob = a.speed + (has(a,'flight')?5:0);
-        const bMob = b.speed + (has(b,'flight')?5:0);
+        const aMob = a.speed + (hasTag(a,'flight')?5:0);
+        const bMob = b.speed + (hasTag(b,'flight')?5:0);
         delta += (aMob - bMob) * 0.05;
       }
       if (styleHome.value==='dc') delta += 2;
@@ -867,26 +904,26 @@
       if (styleWeather.value==='stormy'){
         if (a.name==='Storm') delta += 4;
         if (b.name==='Storm') delta -= 4;
-        if (has(a,'flight')) delta += 1;
-        if (has(b,'flight')) delta -= 1;
-        if (has(a,'tech')) delta -= 0.5;
-        if (has(b,'tech')) delta += 0.5;
+        if (hasTag(a,'flight')) delta += 1;
+        if (hasTag(b,'flight')) delta -= 1;
+        if (hasTag(a,'tech')) delta -= 0.5;
+        if (hasTag(b,'tech')) delta += 0.5;
       } else if (styleWeather.value==='rain'){
         if (a.name==='Aquaman') delta += 5;
         if (b.name==='Aquaman') delta -= 5;
-        if (has(a,'water')) delta += 2;
-        if (has(b,'water')) delta -= 2;
+        if (hasTag(a,'water')) delta += 2;
+        if (hasTag(b,'water')) delta -= 2;
       } else if (styleWeather.value==='space'){
-        delta += (has(a,'cosmic')?3:0) + (has(a,'flight')?1.5:0);
-        delta -= (has(b,'cosmic')?3:0) + (has(b,'flight')?1.5:0);
+        delta += (hasTag(a,'cosmic')?3:0) + (hasTag(a,'flight')?1.5:0);
+        delta -= (hasTag(b,'cosmic')?3:0) + (hasTag(b,'flight')?1.5:0);
       }
 
       const prep = parseInt(stylePrep.value,10) || 0;
       if (prep>0){
-        if (has(a,'strategist')) delta += prep * 0.6;
-        if (has(b,'strategist')) delta -= prep * 0.6;
-        if (has(a,'strategist') && has(b,'rage')) delta += 0.5;
-        if (has(b,'strategist') && has(a,'rage')) delta -= 0.5;
+        if (hasTag(a,'strategist')) delta += prep * 0.6;
+        if (hasTag(b,'strategist')) delta -= prep * 0.6;
+        if (hasTag(a,'strategist') && hasTag(b,'rage')) delta += 0.5;
+        if (hasTag(b,'strategist') && hasTag(a,'rage')) delta -= 0.5;
       }
       const bias = parseInt(styleBias.value,10) || 0;
       delta += (-bias) * 0.3;
@@ -904,7 +941,7 @@
     function simulateOnce(a, b){ return Math.random() < gameWinProb(a,b); }
     function estimateProb(a,b,n){ let w=0; for(let i=0;i<n;i++) if(simulateOnce(a,b)) w++; return w/n; }
 
-    runBtn.addEventListener('click', ()=>{
+    document.getElementById('runSim').addEventListener('click', ()=>{
       const a = HEROES.find(h=>h.id===ddA.value);
       const b = HEROES.find(h=>h.id===ddB.value);
       if(!a || !b){ alert('Pick one DC hero and one Marvel hero to simulate.'); return; }
@@ -922,12 +959,12 @@
         if(aWon) aWins++; else bWins++;
         const why = [];
         if (styleMagic.checked){
-          if (has(a,'mystic') && !has(b,'mystic')) why.push('magic edge');
-          if (has(b,'mystic') && !has(a,'mystic')) why.push('magic edge');
+          if ((a.tags||[]).includes('mystic') && !(b.tags||[]).includes('mystic')) why.push('magic edge');
+          if ((b.tags||[]).includes('mystic') && !(a.tags||[]).includes('mystic')) why.push('magic edge');
         }
         if (styleTechCounters.checked){
-          if (has(a,'tech') && has(b,'mystic')) why.push('tech vs magic');
-          if (has(b,'tech') && has(a,'mystic')) why.push('tech vs magic');
+          if ((a.tags||[]).includes('tech') && (b.tags||[]).includes('mystic')) why.push('tech vs magic');
+          if ((b.tags||[]).includes('tech') && (a.tags||[]).includes('mystic')) why.push('tech vs magic');
         }
         if (styleLargeArena.checked) why.push('mobility');
         if (styleHome.value!=='none') why.push('home field');
@@ -943,7 +980,7 @@
       seriesResult.innerHTML = `<span class="chip">Series Result</span> <span class="ms-2">${a.name} vs ${b.name} → <span class="text-gold font-semibold">${winner.name}</span> wins ${Math.max(aWins,bWins)}-${Math.min(aWins,bWins)}</span>`;
     });
 
-    clearBtn.addEventListener('click', ()=>{
+    document.getElementById('clearMatch').addEventListener('click', ()=>{
       ddA.value = ''; ddB.value = '';
       document.getElementById('compareA').innerHTML='';
       document.getElementById('compareB').innerHTML='';
@@ -957,7 +994,6 @@
     function renderAll(){
       renderTable();
       renderSpotlights();
-      // All Heroes is refreshed by renderTable -> renderAllHeroes(true)
     }
     renderAll();
   </script>
